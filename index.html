@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Maze</title>
+  <link rel="stylesheet" type="text/css" href="css/style.css">
+  <script src="js/component.js" defer></script>
+  <script src="js/controlPanel.js" defer></script>
+  <script src="js/cell.js" defer></script>
+  <script src="js/maze.js" defer></script>
+  <script src="js/page.js" defer></script>
+  <script src="js/app.js" defer></script>
+</head>
+<body>
+<div class="main-page" data-component="page">
+
+  <div class="control-panel" data-component="control-panel">
+
+    <div class="params">
+      <span class="title">Size parameters</span>
+      <label>Cell size</label>
+
+      <select data-selector="cell-size-select">
+        <option value="64">64px</option>
+        <option selected value="32">32px</option>
+        <option value="16">16px</option>
+        <option value="8">8px</option>
+        <option value="4">4px</option>
+      </select>
+
+      <br/>
+      <label>Maze size</label>
+      <input type="number" step="2" min="5" max="1000" value="21" data-selector="height-input">
+      <input type="number" step="2" min="5" max="1000" value="21" data-selector="width-input">
+    </div>
+
+    <div class="params">
+      <span class="title">Maze generation</span>
+      <label>Variety</label>
+      <input type="number" id="variety" step="0.01" min="0" max="1" value="0.0" data-selector="variety-input">
+      <br>
+      <button data-selector="generate-button">Generate</button>
+      <br>
+      <span class="desc">From 0 to 1, 0 - is for perfect maze.</span>
+    </div>
+
+    <div class="params">
+      <span class="title">Customize map</span>
+      <button data-selector="set-start-button">Set Start</button>
+      <button data-selector="set-finish-button">Set Finish</button>
+      <br>
+      <span class="desc">Click on map to change cell to wall.</span>
+    </div>
+
+    <div class="params">
+      <span class="title">Path search</span>
+      <button data-selector="find-path-button">Find</button>
+    </div>
+
+  </div>
+  <div class="canvas-container">
+    <canvas id="canvas" data-component="maze-canvas">Update your browser.</canvas>
+  </div>
+  <br>
+  Made by Ruslan Sukhanov <a href="https://github.com/cyxapb1280/MazeTask">Sources</a>
+</div>
+
+</body>
+</html>

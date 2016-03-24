@@ -1,0 +1,59 @@
+body {
+    font-family: "Arial";
+    font-size: 16px;
+    margin-top: 0;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.control-panel {
+    padding: 10px;
+    width: 100%;
+    align: center;
+}
+
+.desc {
+    color: slategrey;
+    font-size: 14px;
+    vertical-align: bottom;
+}
+div.params{
+    background-color: gainsboro;
+    margin: 5px;
+    padding: 10px;
+    text-align: center;
+    border-left: 5px solid white;
+    border-radius: 10px;
+    display: table-cell;
+}
+
+button {
+    width: 100px;
+    padding: 3px;
+    text-align: center;
+    font-size: 15px;
+    margin: 5px;
+}
+
+span.title {
+    font-size: 28px;
+    text-align: center;
+    display: block;
+    color: darkslateblue;
+    margin-right: 50px;
+    margin-left: 50px;
+    margin-bottom: 20px;
+}
+
+input, label, select {
+    margin: 3px;
+}
+
+select {
+    margin-left: 13px;
+    width: 79px;
+    padding: 1px;
+}
+#canvas {
+    padding: 10px;
+}
