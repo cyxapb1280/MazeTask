@@ -26,7 +26,6 @@ class Maze extends Component {
       this.initialiseCanvas()
       this.drawMap();
       this.drawPath();
-      console.log(this.toString());
     }
   }
 
@@ -125,12 +124,12 @@ class Maze extends Component {
       allMarked = true;
       for (let i = 0; i < map.length; i++) {
         for (let j = 0; j < map[i].length; j++) {
-          if (this._isFinish(j, i) && this._map[i][j].marked) {
+          if (this._isFinish(i, j) && this._map[i][j].marked) {
             return "success";
           }
 
           if (!map[i][j].wall && map[i][j].value == currStep) {
-            allMarked = this._markMates([i, j], currStep + 1)
+            allMarked = this._markMates([i, j], currStep + 1, allMarked);
           }
         }
       }
@@ -143,7 +142,7 @@ class Maze extends Component {
   findPath() {
     let i = this._finish[0];
     let j = this._finish[1];
-    let finishValue = this._map[this._finish[0]][this._finish[1]].value;
+    let finishValue = this._map[i][j].value;
 
     if (!this._map[this._finish[0]][this._finish[1]].marked)
       return "fail";
@@ -151,7 +150,7 @@ class Maze extends Component {
     this._path = [];
     this._path.unshift(this._finish);
 
-    for (let k = this._map[this._finish[0]][this._finish[1]].value; k >= 0; k--) {
+    for (let k = finishValue; k >= 0; k--) {
 
       if (this._map[i][j - 1] &&
         this._map[i][j - 1].value == this._map[i][j].value - 1) {
@@ -252,7 +251,7 @@ class Maze extends Component {
           continue;
         }
         if (this._map[i][j].value)
-          str += this._map[i][j].value + ",\t";
+          str += +this._map[i][j].value + ",\t";
         else
           str += " ,\t";
       }
@@ -381,38 +380,38 @@ class Maze extends Component {
 
   }
 
-  _markMates(cell, value) {
+  _markMates(cell, value, allMarked) {
 
     let map = this._map;
     let i = cell[0];
     let j = cell[1];
-    let noMates = true;
 
     if (map[i][j - 1] && !map[i][j - 1].marked && !map[i][j - 1].wall) {
       this._map[i][j - 1].value = value;
       this._map[i][j - 1].marked = true;
-      noMates = false
+      allMarked = false;
     } //left cell
 
     if (map[i - 1] && !map[i - 1][j].marked && !map[i - 1][j].wall) {
       this._map[i - 1][j].value = value;
       this._map[i - 1][j].marked = true;
-      noMates = false
+      allMarked = false;
     } //top cell
 
     if (map[i][j + 1] && !map[i][j + 1].marked && !map[i][j + 1].wall) {
       this._map[i][j + 1].value = value;
       this._map[i][j + 1].marked = true;
-      noMates = false
+      allMarked = false;
     } //right cell
 
     if (map[i + 1] && !map[i + 1][j].marked && !map[i + 1][j].wall) {
       this._map[i + 1][j].value = value;
       this._map[i + 1][j].marked = true;
-      noMates = false
+      allMarked = false;
     } //bottom cell
 
-    return noMates;
+
+    return allMarked;
   }
 
   _brakeWalls(currCell) {
@@ -470,8 +469,8 @@ class Maze extends Component {
     }
   }
 
-  _isFinish(x, y) {
-    if (y == this._finish[0] && x == this._finish[1]) {
+  _isFinish(i, j) {
+    if (i == this._finish[0] && j == this._finish[1]) {
       return true;
     }
   }

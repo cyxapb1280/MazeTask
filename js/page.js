@@ -45,6 +45,7 @@ class Page {
     this._maze.setFinish(newFinish);
     this._maze.generate(variety);
     this._maze.drawMap();
+    console.log(this._maze.toString());
   }
 
   _onControlPanelSetStart(event){
@@ -65,6 +66,7 @@ class Page {
     this._maze.waveAlgorithm();
     this._maze.findPath();
     this._maze.drawPath();
+    console.log(this._maze.toString())
   }
 
   _onControlPanelCellSizeChange(event){
