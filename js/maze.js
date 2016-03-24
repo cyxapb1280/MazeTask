@@ -8,22 +8,21 @@ class Maze extends Component {
     super(options);
     this._height = options.height;
     this._width = options.width;
-    this._self = this;
     this._map = [];
     this._start = [1, 1];
     this._finish = [this._height - 2, this._width - 2];
     this._cellSize = options.cellSize;
     this._path = [];
-    this._inputState = "wall";
-    this._ctx = null;
+    this._inputState = 'wall';
+    this._context = null;
 
     this._createEmptyMap();
 
-    if(this._el){
+    if (this._el) {
       this.generate(0.0);
       this.waveAlgorithm();
       this.findPath();
-      this.initialiseCanvas()
+      this.initialiseCanvas();
       this.drawMap();
       this.drawPath();
     }
@@ -50,61 +49,61 @@ class Maze extends Component {
   }
 
   setWalls(walls) {
-    let x, y;
-    
-    for (let i = 0; i < walls.length; i++) {
-      x = walls[i][1];
-      y = walls[i][0];
-      
-      if (y >= this._height || x >= this._width)
-        throw new Error("Cant create Wall out of map size.");
-      
-      this._map[y][x].wall = true;
+    let i, j;
+
+    for (let k = 0; k < walls.length; k++) {
+      i = walls[k][0];
+      j = walls[k][1];
+
+      if (i >= this._height || j >= this._width)
+        throw new Error('Cant create Wall out of map size.');
+
+      this._map[i][j].wall = true;
     }
   }
 
   setStart(value) {
-    let x = value[1];
-    let y = value[0];
+    let i = value[0];
+    let j = value[1];
 
-    if (y >= this._height || x >= this._width) {
-      console.log("Cant create Start out of this._map size.");
-      return "fail";
+    if (i >= this._height || j >= this._width) {
+      console.log('Cant create Start out of this._map size.');
+      return 'fail';
     }
-    
-    if (this._map[y][x].wall) {
-      console.log("Cant create Start at wall cell");
-      return "fail";
+
+    if (this._map[i][j].wall) {
+      console.log('Cant create Start at wall cell');
+      return 'fail';
     }
-    
+
     this._start = value;
-    
+
     if (this._el)
-      this._self.drawMap();
-    
-    return "ok";
+      this.drawMap();
+
+    return 'ok';
   }
 
   setFinish(value) {
-    let x = value[1];
-    let y = value[0];
+    let i = value[0];
+    let j = value[1];
 
-    if (y >= this._height || x >= this._width) {
-      console.log("Cant create Finish out of this._map size.");
-      return "fail";
+    if (i >= this._height || j >= this._width) {
+      console.log('Cant create Finish out of this._map size.');
+      return 'fail';
     }
 
-    if (this._map[y][x].wall) {
-      console.log("Cant create Finish at wall cell");
-      return "fail";
+    if (this._map[i][j].wall) {
+      console.log('Cant create Finish at wall cell');
+      return 'fail';
     }
 
     this._finish = value;
 
     if (this._el)
-      this._self.drawMap();
+      this.drawMap();
 
-    return "ok";
+    return 'ok';
   }
 
   setInputState(value) {
@@ -125,7 +124,7 @@ class Maze extends Component {
       for (let i = 0; i < map.length; i++) {
         for (let j = 0; j < map[i].length; j++) {
           if (this._isFinish(i, j) && this._map[i][j].marked) {
-            return "success";
+            return 'success';
           }
 
           if (!map[i][j].wall && map[i][j].value == currStep) {
@@ -136,7 +135,7 @@ class Maze extends Component {
       currStep++;
     }
 
-    return "fail";
+    return 'fail';
   }
 
   findPath() {
@@ -144,14 +143,14 @@ class Maze extends Component {
     let j = this._finish[1];
     let finishValue = this._map[i][j].value;
 
-    if (!this._map[this._finish[0]][this._finish[1]].marked)
-      return "fail";
-
     this._path = [];
+
+    if (!this._map[this._finish[0]][this._finish[1]].marked)
+      return 'fail';
+
     this._path.unshift(this._finish);
 
     for (let k = finishValue; k >= 0; k--) {
-
       if (this._map[i][j - 1] &&
         this._map[i][j - 1].value == this._map[i][j].value - 1) {
         this._path.unshift([i, j - 1]);
@@ -182,33 +181,36 @@ class Maze extends Component {
   }
 
   drawMap() {
+    let ctx = this._context;
+
     this._el.width = this._cellSize * this._width;
     this._el.height = this._cellSize * this._height;
 
-    this._ctx.fillStyle = "rgb(245,224,193)";
-    this._ctx.fillRect(0, 0, this._el.width, this._el.height);
+    ctx.fillStyle = 'rgb(245,224,193)';
+    ctx.fillRect(0, 0, this._el.width, this._el.height);
 
-    this._ctx.strokeStyle = "rgb(148,132,134)";
-    this._ctx.lineWidth = 1;
+    ctx.strokeStyle = 'rgb(148,132,134)';
+    ctx.lineWidth = 1;
     let currX = 0, currY = 0;
 
-    this._ctx.fillStyle = "rgb(75,92,143)";
-    this._ctx.font = this._cellSize / 2 + "px Arial";
-    this._ctx.textAlign = "center";
+    ctx.fillStyle = 'rgb(75,92,143)';
+    ctx.font = this._cellSize / 2 + 'px Arial';
+    ctx.textAlign = 'center';
+
     for (let i = 0; i < this._height; i++) {
       currX = 0;
       for (let j = 0; j < this._width; j++) {
-        this._ctx.strokeRect(currX, currY, this._cellSize, this._cellSize);
+        ctx.strokeRect(currX, currY, this._cellSize, this._cellSize);
 
         if (this._map[i][j].wall)
-          this._ctx.fillRect(currX, currY, this._cellSize, this._cellSize);
+          ctx.fillRect(currX, currY, this._cellSize, this._cellSize);
 
         if (i == this._start[0] && j == this._start[1]) {
-          this._ctx.fillText("S", currX + this._cellSize / 5, currY + this._cellSize / 2);
+          ctx.fillText('S', currX + this._cellSize / 5, currY + this._cellSize / 2);
         }
 
         if (i == this._finish[0] && j == this._finish[1]) {
-          this._ctx.fillText("F", currX + this._cellSize / 5, currY + this._cellSize / 2);
+          ctx.fillText('F', currX + this._cellSize / 5, currY + this._cellSize / 2);
         }
 
         currX += this._cellSize;
@@ -218,44 +220,52 @@ class Maze extends Component {
   }
 
   drawPath() {
-    let toX, toY;
-    this._ctx.strokeStyle = "rgb(102,47,62)";
-    this._ctx.lineWidth = this._cellSize / 6;
-    this._ctx.beginPath();
-    this._ctx.moveTo(this._path[0][1] * this._cellSize + this._cellSize / 2, this._path[0][0] * this._cellSize + this._cellSize / 2);
+    let ctx = this._context;
+    let toX = this._path[0][1] * this._cellSize + this._cellSize / 2;
+    let toY = this._path[0][0] * this._cellSize + this._cellSize / 2;
+
+    ctx.strokeStyle = 'rgb(102,47,62)';
+    ctx.lineWidth = this._cellSize / 6;
+    ctx.beginPath();
+    ctx.moveTo(toX, toY);
 
     for (let i = 1; i < this._path.length; i++) {
       toX = this._path[i][1] * this._cellSize + this._cellSize / 2;
       toY = this._path[i][0] * this._cellSize + this._cellSize / 2;
 
-      this._ctx.lineTo(toX, toY);
+      ctx.lineTo(toX, toY);
     }
 
-    this._ctx.stroke();
+    ctx.stroke();
   }
 
   toString() {
-    let str = "";
+    let str = '';
+
     for (let i in this._map) {
       for (let j in this._map[i]) {
         if (this._map[i][j].wall) {
-          str += "w,\t";
+          str += 'w,\t';
           continue;
         }
+
         if (i == this._start[0] && j == this._start[1]) {
-          str += "s,\t";
+          str += 's,\t';
           continue;
         }
+
         if (i == this._finish[0] && j == this._finish[1]) {
-          str += "f,\t";
+          str += 'f,\t';
           continue;
         }
-        if (this._map[i][j].value)
-          str += +this._map[i][j].value + ",\t";
-        else
-          str += " ,\t";
+
+        if (this._map[i][j].value) {
+          str += +this._map[i][j].value + ',\t';
+        } else {
+          str += ',\t';
+        }
       }
-      str += "\n";
+      str += '\n';
     }
     return str;
   }
@@ -271,8 +281,9 @@ class Maze extends Component {
 
     for (let i = 0; i < this._height; i++) {
       for (let j = 0; j < this._width; j++) {
-        if (!(i % 2 != 0 && j % 2 != 0))
+        if (!(i % 2 != 0 && j % 2 != 0)){
           this._map[i][j].wall = true;
+        }
       }
     }
 
@@ -301,9 +312,9 @@ class Maze extends Component {
   }
 
   initialiseCanvas() {
-    this._ctx = this._el.getContext("2d");
+    this._context = this._el.getContext('2d');
 
-    this._el.onclick = this._canvasOnClick.bind(this);
+    this._el.addEventListener('click', this._canvasOnClick.bind(this));
   }
 
   _canvasOnClick(event) {
@@ -312,27 +323,28 @@ class Maze extends Component {
     let y = (event.pageY - this._el.offsetTop) / this._cellSize | 0;
 
     switch (this._inputState) {
-      case "wall":
+      case 'wall':
         this._flipWall(x, y);
         this._clearMap();
-        this._self.drawMap();
+        this.drawMap();
         break;
-      case "start":
-        if (this._self.setStart([y, x]) == "ok")
-          this._maze.setInputState("wall");
+      case 'start':
+        if (this.setStart([y, x]) == 'ok')
+          this.setInputState('wall');
         break;
-      case "finish":
-        if (this._self.setFinish([y, x]) == "ok")
-          this._maze.setInputState("wall");
+      case 'finish':
+        if (this.setFinish([y, x]) == 'ok')
+          this.setInputState('wall');
         break;
     }
 
-    console.log("Clicked [" + x + " " + y + "]");
+    console.log('Clicked [' + x + ', ' + y + ']');
   }
 
   _flipWall(x, y) {
-    if ((this._start[1] == x && this._start[0] == y ) || (this._finish[1] == x && this._finish[0] == y)) {
-      console.log("Cant create wall on this._start or this._finish cell.");
+    if ((this._start[1] == x && this._start[0] == y ) ||
+      (this._finish[1] == x && this._finish[0] == y)) {
+      console.log('Cant create wall on this._start or this._finish cell.');
       return;
     }
     this._map[y][x].wall = !this._map[y][x].wall;
@@ -361,19 +373,19 @@ class Maze extends Component {
     let j = cell[1];
 
     if (this._map[i][j - 2] && !this._map[i][j - 2].wall && !this._map[i][j - 2].marked) {
-      mates.push("left");
+      mates.push('left');
     }// left mate
 
     if (this._map[i - 2] && !this._map[i - 2][j].wall && !this._map[i - 2][j].marked) {
-      mates.push("top");
+      mates.push('top');
     } // top mate
 
     if (this._map[i][j + 2] && !this._map[i][j + 2].wall && !this._map[i][j + 2].marked) {
-      mates.push("right");
+      mates.push('right');
     } // right mate
 
     if (this._map[i + 2] && !this._map[i + 2][j].wall && !this._map[i + 2][j].marked) {
-      mates.push("bottom");
+      mates.push('bottom');
     } // bottom mate
 
     return mates;
@@ -415,48 +427,50 @@ class Maze extends Component {
   }
 
   _brakeWalls(currCell) {
+    let i = currCell[0];
+    let j = currCell[1];
     let mates;
     let rand;
     let stack = [];
+    let map = this._map;
 
     while (true) {
-      mates = this._getMatesTrowWall(currCell);
+      mates = this._getMatesTrowWall([i, j]);
       rand = Math.round(Math.random() * 10) % mates.length;
 
       if (mates.length == 0) {
-        this._map[currCell[0]][currCell[1]].marked = true;
+        this._map[i][j].marked = true;
         break;
       }
-      stack.push(currCell);
+      stack.push([i, j]);
 
       switch (mates[rand]) {
-        case "left":
-          this._map[currCell[0]][currCell[1]].marked = true;
-          this._map[currCell[0]][currCell[1] - 1].marked = true;
-          this._map[currCell[0]][currCell[1] - 1].wall = false;
-          currCell = [currCell[0], currCell[1] - 2];
+        case 'left':
+          map[i][j].marked = true;
+          map[i][j - 1].marked = true;
+          map[i][j - 1].wall = false;
+          j = j - 2;
           break;
-        case "top":
-          this._map[currCell[0]][currCell[1]].marked = true;
-          this._map[currCell[0] - 1][currCell[1]].marked = true;
-          this._map[currCell[0] - 1][currCell[1]].wall = false;
-          currCell = [currCell[0] - 2, currCell[1]];
+        case 'top':
+          map[i][j].marked = true;
+          map[i - 1][j].marked = true;
+          map[i - 1][j].wall = false;
+          i = i - 2;
           break;
-        case "right":
-          this._map[currCell[0]][currCell[1]].marked = true;
-          this._map[currCell[0]][currCell[1] + 1].marked = true;
-          this._map[currCell[0]][currCell[1] + 1].wall = false;
-          currCell = [currCell[0], currCell[1] + 2];
+        case 'right':
+          map[i][j].marked = true;
+          map[i][j + 1].marked = true;
+          map[i][j + 1].wall = false;
+          j = j + 2;
           break;
-        case "bottom":
-          this._map[currCell[0]][currCell[1]].marked = true;
-          this._map[currCell[0] + 1][currCell[1]].marked = true;
-          this._map[currCell[0] + 1][currCell[1]].wall = false;
-          currCell = [currCell[0] + 2, currCell[1]];
+        case 'bottom':
+          map[i][j].marked = true;
+          map[i + 1][j].marked = true;
+          map[i + 1][j].wall = false;
+          i = i + 2;
           break;
       }
     }
-
     return stack;
   }
 
